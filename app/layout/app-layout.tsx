@@ -14,15 +14,15 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <header className="bg-white border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-          {/* Logo links to feed */}
-          <Link href="/feed">
+          {/* Logo which redirects to main feed */}
+          <Link href="/pages/main-feed">
               <h1 className="text-2xl font-bold text-red-600">BuckeyeConnect</h1>
             </Link>
 
             {/* Main feed tab */}
             <nav className="flex gap-4">
               <Link 
-                href="/"
+                href="/pages/main-feed"
                 className={`px-4 py-2 rounded-lg ${
                   pathname === '/' ? 'bg-red-50 text-red-600' : 'text-gray-600'
                 }`}
@@ -32,7 +32,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
               {/* Friend tab - to be implemented */}
               <Link 
-                href="/friend"
+                href="/friend" // TODO: ADD PATH /pages/friend 
                 className={`px-4 py-2 rounded-lg ${
                   pathname === '/friend' ? 'bg-red-50 text-red-600' : 'text-gray-600'
                 }`}
@@ -42,7 +42,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
               {/* Profile tab - to be implemented */}
               <Link 
-                href="/profile"
+                href="/profile" // TODO: ADD PATH /pages/profile 
                 className={`px-4 py-2 rounded-lg ${
                   pathname === '/profile' ? 'bg-red-50 text-red-600' : 'text-gray-600'
                 }`}
@@ -52,7 +52,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
               {/* Create activity - to be implemented */}
               <Link 
-                href="/create"
+                href="/create" // TODO: ADD PATH /pages/create 
                 className="bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
               >
                 <Plus size={20} />

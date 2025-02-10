@@ -1,13 +1,12 @@
-import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import AppLayout from '../components/ui/layout/app-layout';
 import './globals.css';
+import AppLayout from './layout/app-layout'
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'BuckeyeConnect',
-  description: 'Connect with OSU students through activities and events',
+  description: 'Connect with OSU students through activities and events!',
 };
 
 export default function RootLayout({
@@ -17,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-screen flex flex-col`}>
         <AppLayout>{children}</AppLayout>
       </body>
     </html>
