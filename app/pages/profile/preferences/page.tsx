@@ -1,26 +1,32 @@
 // app/profile/preferences/page.tsx
-'use client';
+"use client";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function PreferencesPage() {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-6">Profile Setup</h1>
-      
+
       {/* Profile Navigation Tabs */}
       <div className="flex space-x-8 mb-8 border-b">
         <div className="pb-2">
-          <Link 
-            href="/pages/profile/basic-info"
-          >
+          <Link href="/pages/profile/basic-info">
             <span className="text-gray-500">Basic Info</span>
           </Link>
         </div>
         <div className="pb-2">
-          <span className="text-gray-500">Interests & Tags</span>
+          <Link href="/pages/profile/interests">
+            <span className="text-gray-500">Interests & Tags</span>
+          </Link>
         </div>
         <div className="pb-2">
           <span className="text-gray-500">Schedule</span>
@@ -50,25 +56,36 @@ export default function PreferencesPage() {
 
         {/* Friend Matching Preferences */}
         <div className="mt-8">
-          <h2 className="text-lg font-medium mb-4">Friend Matching Preferences</h2>
+          <h2 className="text-lg font-medium mb-4">
+            Friend Matching Preferences
+          </h2>
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Checkbox id="same-major" />
-              <label htmlFor="same-major" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              <label
+                htmlFor="same-major"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
                 Match with same major
               </label>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Checkbox id="same-year" />
-              <label htmlFor="same-year" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              <label
+                htmlFor="same-year"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
                 Match with same year
               </label>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Checkbox id="schedule-compatibility" />
-              <label htmlFor="schedule-compatibility" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              <label
+                htmlFor="schedule-compatibility"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
                 Match based on schedule compatibility
               </label>
             </div>
@@ -81,14 +98,20 @@ export default function PreferencesPage() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Checkbox id="show-profile" />
-              <label htmlFor="show-profile" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              <label
+                htmlFor="show-profile"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
                 Show my profile in friend matching
               </label>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Checkbox id="show-schedule" />
-              <label htmlFor="show-schedule" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              <label
+                htmlFor="show-schedule"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
                 Show my schedule to matches
               </label>
             </div>
