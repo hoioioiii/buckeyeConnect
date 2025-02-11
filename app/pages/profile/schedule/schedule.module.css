@@ -1,0 +1,43 @@
+.pageContainer {
+  @apply border border-black mx-auto max-w-3xl mt-8 p-6;
+}
+
+.tabs {
+  @apply mb-4 flex items-center gap-6 border-b border-gray-300 pb-2 text-sm;
+}
+
+/*Default tab*/
+.tabLink {
+  @apply text-muted-foreground hover:text-foreground;
+}
+
+/*Selected Tab*/
+.tabLinkActive {
+  @apply text-red-600 font-bold underline underline-offset-4 decoration-2 decoration-red-600;
+}
+
+.connectScheduleCard {
+  @apply mb-6 rounded-md p-4 border border-blue-100 bg-blue-200;
+}
+
+/*Connect BuckeyeLink button*/
+.connectButton {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.continueButton {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
+
+.preferredTimesGrid {
+  @apply grid grid-cols-2 gap-4;
+}
+
+.preferredTimeItem {
+  @apply rounded-md border border-gray-300 p-4 flex items-center space-x-2;
+}
+
+/*Buffer time border*/
+.selectTriggerBorder {
+  @apply border border-gray-300 rounded-md;
+}
