@@ -42,9 +42,9 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
               {/* Profile tab - to be implemented */}
               <Link 
-                href="/pages/profile/basic-info" // TODO: ADD PATH /pages/profile 
+                href="/profile" // TODO: ADD PATH /pages/profile 
                 className={`px-4 py-2 rounded-lg ${
-                  pathname === '/profile/basic-info' ? 'bg-red-50 text-red-600' : 'text-gray-600'
+                  pathname === '/profile' ? 'bg-red-50 text-red-600' : 'text-gray-600'
                 }`}
               >
                 Profile
