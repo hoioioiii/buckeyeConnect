@@ -29,7 +29,9 @@ export default function PreferencesPage() {
           </Link>
         </div>
         <div className="pb-2">
-          <span className="text-gray-500">Schedule</span>
+          <Link href="/pages/profile/schedule">
+            <span className="text-gray-500">Schedule</span>
+          </Link>
         </div>
         <div className="border-b-2 border-red-500 pb-2">
           <span className="text-red-500">Preferences</span>

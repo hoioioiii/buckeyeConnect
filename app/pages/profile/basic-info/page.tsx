@@ -28,7 +28,9 @@ export default function BasicInfoPage() {
           </Link>
         </div>
         <div className="pb-2">
-          <span className="text-gray-500">Schedule</span>
+          <Link href="/pages/profile/schedule">
+            <span className="text-gray-500">Schedule</span>
+          </Link>
         </div>
         <div className="pb-2">
           <Link href="/pages/profile/preferences">
