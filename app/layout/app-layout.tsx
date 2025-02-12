@@ -24,7 +24,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
               <Link 
                 href="/pages/main-feed"
                 className={`px-4 py-2 rounded-lg ${
-                  pathname === '/' ? 'bg-red-50 text-red-600' : 'text-gray-600'
+                  pathname === '/pages/main-feed' ? 'bg-red-50 text-red-600' : 'text-gray-600'
                 }`}
               >
                 Activities
@@ -44,7 +44,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
               <Link 
                 href="/pages/profile/basic-info" // TODO: ADD PATH /pages/profile 
                 className={`px-4 py-2 rounded-lg ${
-                  pathname === '/profile/basic-info' ? 'bg-red-50 text-red-600' : 'text-gray-600'
+                  pathname === '/pages/profile/basic-info' ? 'bg-red-50 text-red-600' : 'text-gray-600'
                 }`}
               >
                 Profile
