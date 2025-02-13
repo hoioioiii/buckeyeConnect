@@ -1,33 +1,41 @@
 // app/profile/basic-info/page.tsx
-'use client';
+"use client";
 
 import { Input } from "@/components/ui/input";
-import Link from 'next/link';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { MapPin } from "lucide-react";
 
 export default function BasicInfoPage() {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-6">Profile Setup</h1>
-      
+
       {/* Profile Navigation Tabs */}
       <div className="flex space-x-8 mb-8 border-b">
         <div className="border-b-2 border-red-500 pb-2">
           <span className="text-red-500">Basic Info</span>
         </div>
         <div className="pb-2">
-          <span className="text-gray-500">Interests & Tags</span>
+          <Link href="/pages/profile/interests">
+            <span className="text-gray-500">Interests & Tags</span>
+          </Link>
         </div>
         <div className="pb-2">
-          <span className="text-gray-500">Schedule</span>
+          <Link href="/pages/profile/schedule">
+            <span className="text-gray-500">Schedule</span>
+          </Link>
         </div>
         <div className="pb-2">
-            <Link 
-                  href="/pages/profile/preferences" 
-            >
-              <span className="text-gray-500">Preferences</span>
-            </Link>
+          <Link href="/pages/profile/preferences">
+            <span className="text-gray-500">Preferences</span>
+          </Link>
         </div>
       </div>
 
@@ -61,7 +69,7 @@ export default function BasicInfoPage() {
 
         <div>
           <label className="block text-sm font-medium mb-2">Bio</label>
-          <textarea 
+          <textarea
             className="w-full min-h-[100px] p-2 border rounded-md"
             placeholder="Tell us about yourself"
           />
