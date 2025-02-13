@@ -52,7 +52,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
               {/* Create activity - to be implemented */}
               <Link 
-                href="/create" // TODO: ADD PATH /pages/create 
+                href="/pages/create-activity" // TODO: ADD PATH /pages/create 
                 className="bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
               >
                 <Plus size={20} />
