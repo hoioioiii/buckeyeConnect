@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +11,7 @@ import toast from "react-hot-toast";
 
 export default function Login() {
 
+  const router = useRouter();
 
   const [data, setData] = useState({
     email: "",
@@ -27,9 +29,7 @@ export default function Login() {
       } else {
         setData({ email: "", password: ""});
         toast.success("Login successful. Welcome to BuckeyeConnect!");
-        if (response.status === 200) { 
-          window.location.replace('/pages/main-feed'); // Redirect to main page
-        } 
+        router.push('/pages/main-feed'); // Redirect to main page
       }
     } catch (error) {
       console.log("Error on sign in: ", error);

@@ -1,5 +1,6 @@
 'use client';
-import React from 'react';
+import React, { useContext } from 'react';
+import { UserContext } from '@/app/context/userContext';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -11,6 +12,8 @@ axios.defaults.withCredentials = true;
 
 // Shared layout for all tabs!!
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  const {user} = useContext(UserContext)
+  
   const pathname = usePathname(); // Next.js routing
 
   // Routes where header and footer should not be displayed
@@ -35,6 +38,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
               <Link href="/pages/register">
                 <h1 className="text-2xl font-bold text-red-600">register</h1>
               </Link>
+              {!!user && (<h2>Hi {user.name}! </h2>)}
 
 
 

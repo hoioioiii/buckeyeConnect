@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +10,8 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 
 export default function Register() {
+
+  const router = useRouter();
 
   const [data, setData] = useState({
     name: "",
@@ -30,7 +33,7 @@ export default function Register() {
         toast.success("Registration successful. Welcome to BuckeyeConnect!");
         // Use window.location.href as an alternative to router.push
         setTimeout(() => {
-          window.location.href = '/pages/main-feed'; // Redirect to login page
+          router.push('/pages/main-feed'); // Redirect to main page
         }, 2000); // 2-second delay
       }
     } catch (error) {

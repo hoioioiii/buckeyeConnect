@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,8 @@ mongoose.connect(process.env.MONGO_URL)
 
 // middleware
 app.use(express.json())
+app.use(cookieParser()) // used to track user sessions 
+app.use(express.urlencoded({extended: false})); // used to parse incoming requests with urlencoded payloads
 
 app.use('/', authRoutes); 
 

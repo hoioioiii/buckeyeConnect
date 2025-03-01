@@ -1,5 +1,6 @@
 import User from '../models/user.js';
 import { hashPassword, comparePassword } from '../helpers/auth.js'
+import jwt from 'jsonwebtoken';
 
 // just to test if the server is working and accessible from the client
 export const test = (req, res) => {
@@ -64,7 +65,12 @@ export const loginUser = async (req, res) => {
         // Check password
         const passwordMatches = await comparePassword(password, user.password)
         if (passwordMatches) {
-            return res.json("Password is correct")
+            // Creates a JWT token with the user's email, ID, and name as the payload. The token is signed using the secret key stored in .env. If the token is successfully created, it is sent back to the client as a cookie.
+            jwt.sign({email: user.email, id: user._id, name: user.name}, process.env.JWT_SECRET, {}, (err, token) => {
+                if (err) throw err;
+                res.cookie('token', token).json(user)
+            });
+            // return res.json("Password is correct")
         }
         if (!passwordMatches) {
             return res.json({
@@ -73,5 +79,26 @@ export const loginUser = async (req, res) => {
         }
     } catch (error) {
         console.log('Error on loginUser:', error)
+    }
+}
+
+// user context endpoint
+export const getProfile = (req, res) => {
+    try {
+        const {token} = req.cookies;
+        // If the token exists, it is verified using the secret key stored in .env. If the token is valid, the user's information is sent back to the client.
+        if (token) { 
+            jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
+                if (err) throw err;
+                res.json(user)
+            })
+        } else {
+            res.json({
+                error: 'No token found'
+            })
+        }
+    } catch (error) {
+        console.log('Error on getProfile:', error)
+        
     }
 }
