@@ -94,11 +94,20 @@ export const getProfile = (req, res) => {
             })
         } else {
             res.json({
-                error: 'No token found'
+                error: 'No token found. User not logged in'
             })
         }
     } catch (error) {
         console.log('Error on getProfile:', error)
         
     }
+}
+
+// Logout endpoint
+export const logoutUser = (req, res) => {
+    // Clear the cookie that contains the token
+    res.clearCookie('token');
+    res.json({
+        message: 'User logged out successfully'
+    })
 }

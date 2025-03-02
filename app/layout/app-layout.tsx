@@ -12,8 +12,13 @@ axios.defaults.withCredentials = true;
 
 // Shared layout for all tabs!!
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
-  const {user} = useContext(UserContext)
-  
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    throw new Error('useContext must be used within a UserContextProvider');
+  }
+
+  const { user, logout } = userContext;
   const pathname = usePathname(); // Next.js routing
 
   // Routes where header and footer should not be displayed
@@ -81,6 +86,16 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
                   <Plus size={20} />
                   Create
                 </Link>
+                {user ? (
+                <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded-lg">
+                  Logout
+                </button>
+              ) : (
+                <Link href="/pages/login" className="bg-red-600 text-white px-4 py-2 rounded-lg">
+                  Login
+                </Link>
+              )}
+
               </nav>
             </div>
           </div>
