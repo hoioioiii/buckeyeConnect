@@ -1,6 +1,4 @@
 'use client';
-import React, { useContext } from 'react';
-import { UserContext } from '@/app/context/userContext';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -12,13 +10,6 @@ axios.defaults.withCredentials = true;
 
 // Shared layout for all tabs!!
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
-  const userContext = useContext(UserContext);
-
-  if (!userContext) {
-    throw new Error('useContext must be used within a UserContextProvider');
-  }
-
-  const { user, logout } = userContext;
   const pathname = usePathname(); // Next.js routing
 
   // Routes where header and footer should not be displayed
@@ -36,65 +27,42 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
                 <h1 className="text-2xl font-bold text-red-600">BuckeyeConnect</h1>
               </Link>
 
-              {/* To fix */}
-              <Link href="/pages/login">
-                <h1 className="text-2xl font-bold text-red-600">login</h1>
-              </Link>
-              <Link href="/pages/register">
-                <h1 className="text-2xl font-bold text-red-600">register</h1>
-              </Link>
-              {!!user && (<h2>Hi {user.name}! </h2>)}
-
-
-
               {/* Main feed tab */}
               <nav className="flex gap-4">
-                <Link 
+                <Link
                   href="/pages/main-feed"
-                  className={`px-4 py-2 rounded-lg ${
-                    pathname === '/pages/main-feed' ? 'bg-red-50 text-red-600' : 'text-gray-600'
-                  }`}
+                  className={`px-4 py-2 rounded-lg ${pathname === '/pages/main-feed' ? 'bg-red-50 text-red-600' : 'text-gray-600'
+                    }`}
                 >
                   Activities
                 </Link>
 
                 {/* Friend tab - to be implemented */}
-                <Link 
+                <Link
                   href="/friend" // TODO: ADD PATH /pages/friend 
-                  className={`px-4 py-2 rounded-lg ${
-                    pathname === '/friend' ? 'bg-red-50 text-red-600' : 'text-gray-600'
-                  }`}
+                  className={`px-4 py-2 rounded-lg ${pathname === '/friend' ? 'bg-red-50 text-red-600' : 'text-gray-600'
+                    }`}
                 >
                   Find Friends
                 </Link>
 
                 {/* Profile tab - to be implemented */}
-                <Link 
+                <Link
                   href="/pages/profile/basic-info" // TODO: ADD PATH /pages/profile 
-                  className={`px-4 py-2 rounded-lg ${
-                    pathname === '/pages/profile/basic-info' ? 'bg-red-50 text-red-600' : 'text-gray-600'
-                  }`}
+                  className={`px-4 py-2 rounded-lg ${pathname === '/pages/profile/basic-info' ? 'bg-red-50 text-red-600' : 'text-gray-600'
+                    }`}
                 >
                   Profile
                 </Link>
 
                 {/* Create activity - to be implemented */}
-                <Link 
+                <Link
                   href="/pages/create-activity" // TODO: ADD PATH /pages/create 
                   className="bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
                 >
                   <Plus size={20} />
                   Create
                 </Link>
-                {user ? (
-                <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded-lg">
-                  Logout
-                </button>
-              ) : (
-                <Link href="/pages/login" className="bg-red-600 text-white px-4 py-2 rounded-lg">
-                  Login
-                </Link>
-              )}
 
               </nav>
             </div>
@@ -103,7 +71,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       )}
 
       {/* Toaster for notifications */}
-      <Toaster position='bottom-right' toastOptions={{duration: 2000}}/>
+      <Toaster position='bottom-right' toastOptions={{ duration: 2000 }} />
 
       {/* Main content area - Changes based on active page */}
       <main className="flex-1 bg-gray-50">
