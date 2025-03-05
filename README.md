@@ -14,6 +14,12 @@ pnpm dev
 bun dev
 ```
 
+Next, start the server while inside the server directory:
+```bash
+npm start
+```
+**Must include server/.env file for the server to work. Excluded from the remote repository for security reasons.**
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
