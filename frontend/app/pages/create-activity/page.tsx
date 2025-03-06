@@ -39,6 +39,7 @@ const CreateActivityPage = () => {
   const [daysEnabledList, setdaysEnabledList] = useState<string[]>([]);
   const [endingPattern, setEndingPattern] = useState<string[]>([]);
 
+  const [selectedTitle, setSelectedTitle] = useState("");
   const [selectedActivity, setSelectedActivity] = useState("");
   const [selectedClub, setSelectedClub] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -167,7 +168,7 @@ const CreateActivityPage = () => {
     endDate.setMinutes(endDate.getMinutes() + Number(selectedDuration));
 
     const activity: Activity_Temp = {
-      title: "Temp Title, - Fix later",
+      title: selectedTitle,
       activity_type: selectedActivity,
       club: selectedClub,
       location: selectedLocation,
@@ -189,17 +190,16 @@ const CreateActivityPage = () => {
     };
 
     console.log("Activity:", activity);
-    redirect("/pages/main-feed");
     //send
-    // addActivity(activity).then((response) => {
-    //   if (response?.success) {
-    //     console.log("Activity created successfully:", response);
-
-    //     router.push("/pages/main-feed");
-    //   } else {
-    //     console.error("Error creating activity:", response?.error);
-    //   }
-    // });
+    addActivity(activity).then((response) => {
+      console.log(response);
+      if (response?.success) {
+        console.log("Activity created successfully:", response);
+        redirect("/pages/main-feed");
+      } else {
+        console.error("Error creating activity:", response?.error);
+      }
+    });
   };
 
   return (
@@ -209,6 +209,21 @@ const CreateActivityPage = () => {
 
         {/* Create Activity Form */}
         <form onSubmit={handleSubmit}>
+
+          {/* Activity Title */}
+          <div className="flex flex-col mb-6">
+            <label htmlFor="title" className="mb-2">
+              Title
+            </label>
+            <Input
+              type="text"
+              id="title"
+              name="title"
+              placeholder="E.g. Icecream Social"
+              onChange={(e) => setSelectedTitle(e.target.value)}
+            />
+          </div>
+
           {/* Activity Type Dropdown */}
           <div className="flex flex-col mb-6">
             <label htmlFor="activityType" className="mb-2">

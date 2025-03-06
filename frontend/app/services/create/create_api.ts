@@ -25,7 +25,7 @@ export async function addActivity(type: Activity_Temp): Promise<Response> {
 
     const data: Response = await response.json();
     console.log("Success:", data);
-    return data;
+    return { success: true, data: data };
   } catch (error) {
     console.error("Error:", error);
     return { success: false, error: "Failed to add activity" };
