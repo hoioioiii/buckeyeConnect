@@ -55,14 +55,19 @@ class InitializeElasticsearch:
             
             print(f"Using certificate at: {cert_path}")
 
+            ctx = ssl.create_default_context()
+            ctx.load_verify_locations(str(cert_path))
+            # Disable strict SSL verification to fix errors on Python 3.13
+            ctx.verify_flags &= ~ssl.VERIFY_X509_STRICT
+
             # Try with SSL verification first
             self.es = Elasticsearch(
                 'https://localhost:9200',
                 basic_auth=('elastic', 'password'),
-                ca_certs=str(cert_path),
                 timeout=30,
                 retry_on_timeout=True,
-                max_retries=3
+                max_retries=3,
+                ssl_context=ctx,
             )
             
             # Verify connection
