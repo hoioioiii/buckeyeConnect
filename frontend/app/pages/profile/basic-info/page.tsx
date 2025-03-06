@@ -1,6 +1,8 @@
 // app/profile/basic-info/page.tsx
 "use client";
 
+import { useContext } from 'react';
+import { UserContext } from '@/app/context/userContext';
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import {
@@ -13,6 +15,14 @@ import {
 import { MapPin } from "lucide-react";
 
 export default function BasicInfoPage() {
+  const userContext = useContext(UserContext);
+
+  if (!userContext) {
+    throw new Error('useContext must be used within a UserContextProvider');
+  }
+
+  const { user, logout } = userContext;
+
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-6">Profile Setup</h1>
@@ -88,6 +98,19 @@ export default function BasicInfoPage() {
             </button>
           </div>
         </div>
+
+        <div className='mt-8'>
+          {user ? (
+            <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded-lg">
+              Logout
+            </button>
+          ) : (
+            <Link href="/pages/login" className="bg-red-600 text-white px-4 py-2 rounded-lg">
+              Login
+            </Link>
+          )}
+        </div>
+
       </div>
     </div>
   );
