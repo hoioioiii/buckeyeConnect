@@ -131,6 +131,8 @@ sample_tags = [
     {"tag_name": "Social", "category": "Social"},
     {"tag_name": "Tech", "category": "Interest"}
 ]
+
+
 def initialize_elasticsearch():
     """
     Initialize Elasticsearch with our indices and mappings
@@ -164,6 +166,26 @@ def initialize_elasticsearch():
             print("Deleting existing tags index...")
             es.indices.delete(index="tags")
             print("Tags index deleted.")
+
+
+        # Check and delete activity type index
+        if es.indices.exists(index="activity_type"):
+            print("Deleting existing activity type index...")
+            es.indices.delete(index="activity_type")
+            print("Activity type index deleted.")
+        
+        # Check and delete club index
+        if es.indices.exists(index="club"):
+            print("Deleting existing club index...")
+            es.indices.delete(index="club")
+            print("Club index deleted.")
+        
+        # Check and delete recurrences pattern index
+        if es.indices.exists(index="recurrences_pattern"):
+            print("Deleting existing recurrences pattern index...")
+            es.indices.delete(index="recurrences_pattern")
+            print("Recurrences pattern index deleted.")
+        
         ########################################################
 
 
@@ -204,6 +226,31 @@ def initialize_elasticsearch():
         else:
             print("Tags index already exists.")
         
+
+        # create activity type index
+        if not es.indices.exists(index="activity_type"):
+            print("Creating activity type index...")
+            es.indices.create(index="activity_type", body=activity_type_mapping)
+            print("Activity type index created!")
+        else:
+            print("Activity type index already exists.")
+
+        # create club type index
+        if not es.indices.exists(index="club"):
+            print("Creating club index...")
+            es.indices.create(index="club", body=club_mapping)
+            print("Club index created!")
+        else:
+            print("Club index already exists.")
+
+        # create recurrences pattern index
+        if not es.indices.exists(index="recurrences_pattern"):
+            print("Creating recurrences pattern index...")
+            es.indices.create(index="recurrences_pattern", body=recurrences_pattern_mapping)
+            print("Recurrences pattern index created!")
+        else:
+            print("Recurrences pattern index already exists.")
+
         # Force refresh to make sure the data is available for search
         es.indices.refresh(index="_all")
         

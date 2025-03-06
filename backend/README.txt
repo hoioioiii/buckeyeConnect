@@ -61,3 +61,35 @@ Elastic search:
 
 May need to run your own certification and connect to it:
 docker cp docker-es01-1:/usr/share/elasticsearch/config/certs/ca/ca.crt ./ca.crt
+
+
+
+//------------------------------------------------
+
+How to run:
+
+Open a seperate terminal from the frontend
+
+1. Run docker:
+
+cd into docker folder 
+run -> docker compose -f 'backend\docker\docker-compose.yml' up -d --build
+then :docker-compose up -d
+
+2. Check Docker is up and running
+run -> docker ps
+
+
+3. Start virtual environment
+cd into /backend
+run -> source venv/Scripts/activate
+
+4. Install packages
+run -> pip install -r requirements.text
+
+5. Create Elastic search certification (ca.crt)
+run -> docker cp docker-es01-1:/usr/share/elasticsearch/config/certs/ca/ca.crt ./ca.crt
+(If getting errors, good chance the path is wrong. Make sure the path is correct in config.py)
+
+6. Run the backend
+run -> python run.py

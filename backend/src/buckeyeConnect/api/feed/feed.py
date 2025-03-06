@@ -4,6 +4,9 @@ from elasticsearch.exceptions import ConnectionError
 import json
 from datetime import datetime
 
+
+#TODO: Note for better matches. doc['_score'] can filter for better matches if needed
+
 # create blue print to zip all the apis corresponding feed into 1 single thing api
 # make sure to register in config.py
 feed_bp = Blueprint('feed', __name__)

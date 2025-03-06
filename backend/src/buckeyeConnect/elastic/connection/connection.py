@@ -18,9 +18,10 @@ class InitializeElasticsearch:
             # Get the path to the current file
             current_file = Path(__file__).resolve()
             backend_dir = current_file.parent.parent.parent.parent.parent
-            
+
+            # IF IT FAILS :  MODIFY THE PATH TO THE CERTIFICATE TO WHERE YOUR PATH IS
             # Construct the path to the certificate
-            cert_path = backend_dir / 'docker' / 'ca.crt'
+            cert_path = backend_dir / 'ca.crt'
             print(f"Looking for certificate at: {cert_path}")
             
             # Check both potential locations for the certificate
@@ -53,7 +54,7 @@ class InitializeElasticsearch:
                     return
             
             print(f"Using certificate at: {cert_path}")
-            
+
             # Try with SSL verification first
             self.es = Elasticsearch(
                 'https://localhost:9200',

@@ -102,6 +102,12 @@ user_mapping = {
     }
 }
 
+
+"""
+Predefined data mappings
+
+"""
+
 predefined_tags = {
     "mappings": {
         "properties": {
@@ -113,4 +119,45 @@ predefined_tags = {
             },
         },
     }
+}
+
+
+
+activity_type_mapping = {
+  "mappings": {
+    "properties": {
+      "activity_type": {
+        "type": "text",
+      },
+    },
+  },
+}
+
+club_mapping = {
+  "mappings": {
+    "properties": {
+      "club_names": {
+        "type": "text",
+      },
+    },
+  },
+}
+
+recurrences_pattern_mapping = {
+  "mappings": {
+    "properties": {
+      "recurrences_pattern": {
+        "type": "keyword",
+      },
+      "duration_minutes": {
+        "type": "keyword",
+      },
+      "ending_pattern": {
+        "type": "keyword",
+      },
+      "days_enabled": {
+        "type": "keyword",
+      },
+    },
+  },
 }

@@ -13,6 +13,11 @@ import { MapPin, Users } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import "./calendar-icon.css";
+import {
+  getActivityTypeList,
+  getClubTypeList,
+  getRecurrancePatternTypeList,
+} from "@/app/services/local_data/local_data_apis";
 
 export default function CreateActivityPage() {
   const [activityFrequency, setActivityFrequency] = useState("one-time");
@@ -62,19 +67,36 @@ export default function CreateActivityPage() {
     );
   };
 
-  const tempActivityType = [
-    "research",
-    "sports",
-    "club-meeting",
-    "food",
-    "study",
-    "volunteering",
-    "gaming",
-    "fitness",
-    "free-swag",
-    "networking",
-    "social",
-    "tech",
+  const tempActivityType = getActivityTypeList().then((data) => {
+    return data?.data;
+  });
+
+  // const tempActivityType = [
+  //   "research",
+  //   "sports",
+  //   "club-meeting",
+  //   "food",
+  //   "study",
+  //   "volunteering",
+  //   "gaming",
+  //   "fitness",
+  //   "free-swag",
+  //   "networking",
+  //   "social",
+  //   "tech",
+  // ];
+
+  const tempClubs = [
+    "8th-floor-improv-comedy-group",
+    "accounting-association",
+    "bangladeshi-student-association",
+    "colorstack",
+    "dance-coalition",
+    "ecocar-challenge-team",
+    "fantasy-football-club",
+    "game-creation-club",
+    "the-happiness-campaign",
+    "ice-hockey-womens-sport-club",
   ];
 
   return (
