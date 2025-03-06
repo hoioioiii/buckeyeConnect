@@ -1,9 +1,9 @@
 
-from elastic.connection.connection import InitalizeElasticsearch 
+from elastic.connection.connection import InitializeElasticsearch
 
 def main():
     try:
-        es = InitalizeElasticsearch()
+        es = InitializeElasticsearch()
         print("Successfully connected to Elasticsearch")
     except Exception as e:
         print(f"Failed to connect: {e}")

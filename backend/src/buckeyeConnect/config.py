@@ -7,12 +7,16 @@ MYSQL_CONFIG = {
     'database': 'buckeyeconnect',
     'port': 3306
 }
+# Import api blueprint
+from .api.feed.feed import feed_bp
 
-# Example database connection in your Flask app
 from flask import Flask
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+
+# Register api blueprint
+app.register_blueprint(feed_bp, url_prefix='/api')
 
 # MySQL configurations
 app.config['MYSQL_HOST'] = MYSQL_CONFIG['host']
