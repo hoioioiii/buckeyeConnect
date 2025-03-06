@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,17 +19,17 @@ import {
   getClubTypeList,
   getRecurrancePatternTypeList,
 } from "@/app/services/local_data/local_data_apis";
+
 import { get } from "http";
 import { ELASTICSEARCH_CONSTANTS } from "@/lib/constants";
-
-export default function CreateActivityPage() {
+import { Activity_Temp } from "@/lib/types";
+import { addActivity } from "@/app/services/create/create_api";
+import { redirect } from "next/navigation";
+const CreateActivityPage = () => {
   const [activityFrequency, setActivityFrequency] = useState("one-time");
-  const durationOptions = Array.from(
-    { length: 24 * 12 },
-    (_, i) => (i + 1) * 5
-  ); // Generate duration options from 0 to 1440 minutes in increments of 5
-  const [recurrencePattern, setRecurrencePattern] = useState("weekly");
-  const [endTime, setEndTime] = useState("endOfSemester");
+
+  const [recurrencePattern, setRecurrencePattern] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activityType, setActivityType] = useState<string[]>([]);
@@ -39,8 +39,20 @@ export default function CreateActivityPage() {
   const [daysEnabledList, setdaysEnabledList] = useState<string[]>([]);
   const [endingPattern, setEndingPattern] = useState<string[]>([]);
 
+  const [selectedActivity, setSelectedActivity] = useState("");
+  const [selectedClub, setSelectedClub] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedMaxParticipants, setSelectedMaxParticipants] = useState(0);
+  const [selectedDescription, setSelectedDescription] = useState("");
+  const [selectedStartDate, setSelectedStartDate] = useState("");
+  const [selectedEndDate, setSelectedEndDate] = useState("");
+  const [selectedDuration, setSelectedDuration] = useState("");
+  const [selectedDaysEnabled, setSelectedDaysEnabled] = useState<string[]>([]);
+  const [selectedEndingPattern, setSelectedEndingPattern] = useState("");
+
   // Logic to format duration in hours and minutes
   const formatDuration = (minutes: number) => {
+    console.log("Minutes:", minutes);
     if (minutes < 60) {
       return `${minutes} minutes`;
     } else if (minutes < 120) {
@@ -56,17 +68,6 @@ export default function CreateActivityPage() {
         : `${hours} hours and ${remainingMinutes} minutes`;
     }
   };
-
-  // Array of days of the week for weekly recurrence selection. Need short and full to differentiate between Ts and Ss, else, when you click one T both Ts will be selected
-  const daysOfWeek = [
-    { short: "S", full: "Sunday" },
-    { short: "M", full: "Monday" },
-    { short: "T", full: "Tuesday" },
-    { short: "W", full: "Wednesday" },
-    { short: "T", full: "Thursday" },
-    { short: "F", full: "Friday" },
-    { short: "S", full: "Saturday" },
-  ];
 
   // Function to toggle day selection for weekly recurrence. If day is already selected, remove it, else add it
   const toggleDaySelection = (day: string) => {
@@ -113,10 +114,10 @@ export default function CreateActivityPage() {
         if (response?.success) {
           pass = true;
           console.log("Setting recurrancePattern with:", response);
-          setRecurrenceList(response?.data?.recurrences_pattern);
-          setDurationList(response?.data?.duration_minutes);
-          setEndingPattern(response?.data?.ending_pattern);
-          setdaysEnabledList(response?.data?.days_enabled);
+          setRecurrenceList(response?.data?.recurrences_pattern[0]);
+          setDurationList(response?.data?.duration_minutes[0]);
+          setEndingPattern(response?.data?.ending_pattern[0]);
+          setdaysEnabledList(response?.data?.days_enabled[0]);
         } else {
           pass = false;
           console.error(
@@ -148,18 +149,58 @@ export default function CreateActivityPage() {
     endingPattern,
   ]);
 
-  const tempClubs = [
-    "8th-floor-improv-comedy-group",
-    "accounting-association",
-    "bangladeshi-student-association",
-    "colorstack",
-    "dance-coalition",
-    "ecocar-challenge-team",
-    "fantasy-football-club",
-    "game-creation-club",
-    "the-happiness-campaign",
-    "ice-hockey-womens-sport-club",
-  ];
+  // Array of days of the week for weekly recurrence selection. Need short and full to differentiate between Ts and Ss, else, when you click one T both Ts will be selected
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    //form data
+
+    //get todays date
+    const today = new Date();
+    const date = `${today.getFullYear()}-${
+      today.getMonth() + 1
+    }-${today.getDate()}`;
+
+    //end date is today + selected duration
+    const endDate = new Date(today);
+    endDate.setMinutes(endDate.getMinutes() + Number(selectedDuration));
+
+    const activity: Activity_Temp = {
+      title: "Temp Title, - Fix later",
+      activity_type: selectedActivity,
+      club: selectedClub,
+      location: selectedLocation,
+      max_spots: selectedMaxParticipants,
+      filled_spots: 0,
+      description: selectedDescription,
+      start_date: selectedStartDate,
+      end_date: endDate,
+      created_on: date,
+      created_by: "temp-user",
+      major: "temp-user-info",
+      year: today.getFullYear(), //this data is set to change
+      tags: ["Research", "Neuroscience", "Paid", "MRI Study", "Volunteering"],
+      distance: 0.8,
+      distance_value: 0.8,
+      recurring: {
+        enabled: activityFrequency === "recurring",
+      },
+    };
+
+    console.log("Activity:", activity);
+    redirect("/pages/main-feed");
+    //send
+    // addActivity(activity).then((response) => {
+    //   if (response?.success) {
+    //     console.log("Activity created successfully:", response);
+
+    //     router.push("/pages/main-feed");
+    //   } else {
+    //     console.error("Error creating activity:", response?.error);
+    //   }
+    // });
+  };
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -167,13 +208,16 @@ export default function CreateActivityPage() {
         <h1 className="text-2xl font-semibold mb-6">Create Activity</h1>
 
         {/* Create Activity Form */}
-        <form>
+        <form onSubmit={handleSubmit}>
           {/* Activity Type Dropdown */}
           <div className="flex flex-col mb-6">
             <label htmlFor="activityType" className="mb-2">
               Activity Type
             </label>
-            <Select>
+            <Select
+              value={selectedActivity}
+              onValueChange={setSelectedActivity}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select an activity type" />
               </SelectTrigger>
@@ -192,37 +236,16 @@ export default function CreateActivityPage() {
             <label htmlFor="assosicatedClub" className="mb-2">
               Associated Club (Optional)
             </label>
-            <Select>
+            <Select value={selectedClub} onValueChange={setSelectedClub}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a club" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="8th-floor-improv-comedy-group">
-                  8th Floor Improv Comedy Group
-                </SelectItem>
-                <SelectItem value="accounting-association">
-                  Accounting Association
-                </SelectItem>
-                <SelectItem value="bangladeshi-student-association">
-                  Bangladeshi Student Association
-                </SelectItem>
-                <SelectItem value="colorstack">ColorStack</SelectItem>
-                <SelectItem value="dance-coalition">Dance Coalition</SelectItem>
-                <SelectItem value="ecocar-challenge-team">
-                  ECOCAR Challenge Team
-                </SelectItem>
-                <SelectItem value="fantasy-football-club">
-                  Fantasy Football Club
-                </SelectItem>
-                <SelectItem value="game-creation-club">
-                  Game Creation Club
-                </SelectItem>
-                <SelectItem value="the-happiness-campaign">
-                  The Happiness Campaign
-                </SelectItem>
-                <SelectItem value="ice-hockey-womens-sport-club">
-                  Ice Hockey - Women&apos;s - Sport Club
-                </SelectItem>
+                {clubList?.map((club) => (
+                  <SelectItem key={club} value={club}>
+                    {club}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -244,6 +267,7 @@ export default function CreateActivityPage() {
                 name="location"
                 placeholder="Where is this happening?"
                 className="pl-10"
+                onChange={(e) => setSelectedLocation(e.target.value)}
               />
             </div>
           </div>
@@ -281,20 +305,24 @@ export default function CreateActivityPage() {
                   id="dateTime"
                   name="dateTime"
                   className="mt-1"
+                  onChange={(e) => setSelectedStartDate(e.target.value)}
                 />
               </div>
               <div className="ml-6 w-full">
                 <label htmlFor="duration" className="">
                   Duration
                 </label>
-                <Select>
+                <Select
+                  value={Number(selectedDuration)}
+                  onValueChange={(value) => setSelectedDuration(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select duration" />
                   </SelectTrigger>
                   <SelectContent>
-                    {durationOptions.map((minutes) => (
-                      <SelectItem key={minutes} value={minutes.toString()}>
-                        {formatDuration(minutes)}
+                    {durationList.map((minutes) => (
+                      <SelectItem key={minutes} value={minutes}>
+                        {formatDuration(Number(minutes))}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -316,26 +344,28 @@ export default function CreateActivityPage() {
                     <SelectValue placeholder="Select recurrence pattern" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="daily">Daily</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
-                    <SelectItem value="monthly">Monthly</SelectItem>
+                    {recurrenceList.map((pattern) => (
+                      <SelectItem key={pattern} value={pattern}>
+                        {pattern}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 {/* If weekly render days of week so user can select */}
                 {recurrencePattern === "weekly" && (
                   <div className="flex justify-between mt-4">
-                    {daysOfWeek.map((day) => (
+                    {daysEnabledList.map((day) => (
                       <button
-                        key={day.full}
+                        key={day}
                         type="button"
                         className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          selectedDays.includes(day.full)
+                          selectedDays.includes(day)
                             ? "bg-blue-500 text-white"
                             : "border border-gray-300"
                         }`}
-                        onClick={() => toggleDaySelection(day.full)}
+                        onClick={() => toggleDaySelection(day)}
                       >
-                        {day.short}
+                        {day.charAt(0)}
                       </button>
                     ))}
                   </div>
@@ -349,20 +379,24 @@ export default function CreateActivityPage() {
                       id="dateTime"
                       name="dateTime"
                       className="mt-1"
+                      onChange={(e) => setSelectedStartDate(e.target.value)}
                     />
                   </div>
                   <div className="ml-6 w-full">
                     <label htmlFor="duration" className="">
                       Duration
                     </label>
-                    <Select>
+                    <Select
+                      value={Number(selectedDuration)}
+                      onValueChange={setSelectedDuration}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select duration" />
                       </SelectTrigger>
                       <SelectContent>
-                        {durationOptions.map((minutes) => (
+                        {durationList.map((minutes) => (
                           <SelectItem key={minutes} value={minutes.toString()}>
-                            {formatDuration(minutes)}
+                            {formatDuration(Number(minutes))}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -379,11 +413,11 @@ export default function CreateActivityPage() {
                       <SelectValue placeholder="Select end date" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="endOfSemester">
-                        End of semester
-                      </SelectItem>
-                      <SelectItem value="never">Never</SelectItem>
-                      <SelectItem value="on">On</SelectItem>
+                      {endingPattern.map((pattern) => (
+                        <SelectItem key={pattern} value={pattern}>
+                          {pattern}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   {endTime === "on" && (
@@ -396,6 +430,7 @@ export default function CreateActivityPage() {
                         id="endDateTime"
                         name="endDateTime"
                         className="mt-1 w-auto"
+                        onChange={(e) => setSelectedEndDate(e.target.value)}
                       />
                     </div>
                   )}
@@ -419,6 +454,9 @@ export default function CreateActivityPage() {
                 type="number"
                 placeholder="How many people can join?"
                 className="pl-10"
+                onChange={(e) =>
+                  setSelectedMaxParticipants(Number(e.target.value))
+                }
               />
             </div>
           </div>
@@ -433,6 +471,7 @@ export default function CreateActivityPage() {
               name="description"
               placeholder="Tell people more about your activity..."
               className="h-32 p-2"
+              onChange={(e) => setSelectedDescription(e.target.value)}
             />
           </div>
 
@@ -443,4 +482,5 @@ export default function CreateActivityPage() {
       </div>
     </div>
   );
-}
+};
+export default CreateActivityPage;

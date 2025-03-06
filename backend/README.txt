@@ -85,7 +85,7 @@ cd into /backend
 run -> source venv/Scripts/activate
 
 4. Install packages
-run -> pip install -r requirements.text
+run -> pip install -r requirements.txt
 
 5. Create Elastic search certification (ca.crt)
 run -> docker cp docker-es01-1:/usr/share/elasticsearch/config/certs/ca/ca.crt ./ca.crt

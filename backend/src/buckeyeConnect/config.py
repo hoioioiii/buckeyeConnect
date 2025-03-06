@@ -10,7 +10,7 @@ import os
 # Import api blueprint
 from .api.feed.feed import feed_bp
 from .api.local_data_apis.local_data import local_data_bp
-
+from .api.create.create import create_bp
 from flask import Flask
 # from flask_mysqldb import MySQL
 
@@ -19,7 +19,7 @@ app = Flask(__name__)
 # Register api blueprint
 app.register_blueprint(feed_bp, url_prefix='/api/feed')
 app.register_blueprint(local_data_bp, url_prefix='/api/local_data')
-
+app.register_blueprint(create_bp, url_prefix='/api/create')
 
 # # MySQL configurations
 # app.config['MYSQL_HOST'] = MYSQL_CONFIG['host']
