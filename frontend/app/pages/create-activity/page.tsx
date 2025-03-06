@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,11 +13,14 @@ import { MapPin, Users } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import "./calendar-icon.css";
+
 import {
   getActivityTypeList,
   getClubTypeList,
   getRecurrancePatternTypeList,
 } from "@/app/services/local_data/local_data_apis";
+import { get } from "http";
+import { ELASTICSEARCH_CONSTANTS } from "@/lib/constants";
 
 export default function CreateActivityPage() {
   const [activityFrequency, setActivityFrequency] = useState("one-time");
@@ -28,6 +31,13 @@ export default function CreateActivityPage() {
   const [recurrencePattern, setRecurrencePattern] = useState("weekly");
   const [endTime, setEndTime] = useState("endOfSemester");
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [activityType, setActivityType] = useState<string[]>([]);
+  const [clubList, setClubList] = useState<string[]>([]);
+  const [recurrenceList, setRecurrenceList] = useState<string[]>([]);
+  const [durationList, setDurationList] = useState<string[]>([]);
+  const [daysEnabledList, setdaysEnabledList] = useState<string[]>([]);
+  const [endingPattern, setEndingPattern] = useState<string[]>([]);
 
   // Logic to format duration in hours and minutes
   const formatDuration = (minutes: number) => {
@@ -67,24 +77,76 @@ export default function CreateActivityPage() {
     );
   };
 
-  const tempActivityType = getActivityTypeList().then((data) => {
-    return data?.data;
-  });
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      let pass = true;
+      getActivityTypeList().then((response) => {
+        console.log("API Response1:", response);
 
-  // const tempActivityType = [
-  //   "research",
-  //   "sports",
-  //   "club-meeting",
-  //   "food",
-  //   "study",
-  //   "volunteering",
-  //   "gaming",
-  //   "fitness",
-  //   "free-swag",
-  //   "networking",
-  //   "social",
-  //   "tech",
-  // ];
+        if (response?.success) {
+          pass = true;
+          console.log("Setting activityType with:", response.data);
+          setActivityType(response?.data);
+        } else {
+          pass = false;
+          console.error("Error fetching activity types:", response?.error);
+        }
+      });
+      getClubTypeList().then((response) => {
+        console.log("API Response2:", response);
+
+        if (response?.success) {
+          pass = true;
+          console.log("Setting club with:", response.data);
+          setClubList(response?.data);
+        } else {
+          pass = false;
+          console.error("Error fetching club types:", response?.error);
+        }
+      });
+
+      getRecurrancePatternTypeList(
+        ELASTICSEARCH_CONSTANTS.RECURRENCES_PATTERN_ALL
+      ).then((response) => {
+        console.log("API Response3:", response);
+        if (response?.success) {
+          pass = true;
+          console.log("Setting recurrancePattern with:", response);
+          setRecurrenceList(response?.data?.recurrences_pattern);
+          setDurationList(response?.data?.duration_minutes);
+          setEndingPattern(response?.data?.ending_pattern);
+          setdaysEnabledList(response?.data?.days_enabled);
+        } else {
+          pass = false;
+          console.error(
+            "Error fetching recurrancePattern types:",
+            response?.error
+          );
+        }
+      });
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("Updated activityType:", activityType);
+    console.log("Updated clubList:", clubList);
+    console.log("Updated recurrenceList:", recurrenceList);
+    console.log("Updated durationList:", durationList);
+    console.log("Updated daysEnabledList:", daysEnabledList);
+    console.log("Updated endingPattern:", endingPattern);
+  }, [
+    activityType,
+    clubList,
+    recurrenceList,
+    durationList,
+    daysEnabledList,
+    endingPattern,
+  ]);
 
   const tempClubs = [
     "8th-floor-improv-comedy-group",
@@ -116,7 +178,7 @@ export default function CreateActivityPage() {
                 <SelectValue placeholder="Select an activity type" />
               </SelectTrigger>
               <SelectContent>
-                {tempActivityType.map((activity) => (
+                {activityType?.map((activity) => (
                   <SelectItem key={activity} value={activity}>
                     {activity}
                   </SelectItem>

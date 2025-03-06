@@ -5,4 +5,5 @@ export const ELASTICSEARCH_CONSTANTS = {
     DURATION_MINUTES : "duration_minutes",
     ENDING_PATTERN : "ending_pattern",
     DAYS_ENABLED : "days_enabled",
+    RECURRENCES_PATTERN_ALL : "all",
 }

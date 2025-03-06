@@ -4,7 +4,7 @@ from .connection.connection import *
 import os
 import sys
 from .mapping.mapping import *
-
+from .data.preexistingData import *
 # Sample data for activities
 sample_activities = [
     {
@@ -169,9 +169,9 @@ def initialize_elasticsearch():
 
 
         # Check and delete activity type index
-        if es.indices.exists(index="activity_type"):
+        if es.indices.exists(index="activity_types"):
             print("Deleting existing activity type index...")
-            es.indices.delete(index="activity_type")
+            es.indices.delete(index="activity_types")
             print("Activity type index deleted.")
         
         # Check and delete club index
@@ -228,10 +228,16 @@ def initialize_elasticsearch():
         
 
         # create activity type index
-        if not es.indices.exists(index="activity_type"):
+        if not es.indices.exists(index="activity_types"):
             print("Creating activity type index...")
-            es.indices.create(index="activity_type", body=activity_type_mapping)
+            es.indices.create(index="activity_types", body=activity_type_mapping)
             print("Activity type index created!")
+
+             # Load sample activity type data
+            print("Loading activity types ...")
+            for i, type in enumerate(local_activity_type_data):
+                es.index(index="activity_types", id=i+1, body=type)
+            print(f"Loaded {len(type)} activity types!")
         else:
             print("Activity type index already exists.")
 
@@ -240,6 +246,13 @@ def initialize_elasticsearch():
             print("Creating club index...")
             es.indices.create(index="club", body=club_mapping)
             print("Club index created!")
+
+            print("Loading club types ...")
+            for i, clubs in enumerate(local_club_type_data):
+                es.index(index="club", id=i+1, body=clubs)
+            print(f"Loaded {len(clubs)} club types!")
+
+
         else:
             print("Club index already exists.")
 
@@ -248,6 +261,12 @@ def initialize_elasticsearch():
             print("Creating recurrences pattern index...")
             es.indices.create(index="recurrences_pattern", body=recurrences_pattern_mapping)
             print("Recurrences pattern index created!")
+
+
+            print("Loading recurring types ...")
+            for i, pattern in enumerate(local_recurrences_pattern_data):
+                es.index(index="recurrences_pattern", id=i+1, body=pattern)
+            print(f"Loaded {len(pattern)} pattern!")
         else:
             print("Recurrences pattern index already exists.")
 
@@ -257,38 +276,35 @@ def initialize_elasticsearch():
         print("Elasticsearch initialization complete!")
         
 
-
-
-
-
-
         # THIS IS FOR TESTING IF WHATEVER TAG IS STORED IN ELASTIC###############
-        # try:
-        #     print("Testing search functionality...")
-        #     response = es.search(
-        #         index="tags", 
-        #         body={"query": {"match_all": {}}},
-        #         size=10
-        #     )
+        try:
+            print("Testing search functionality...")
+            response = es.search(
+                index="club", 
+                body={"query": {"match_all": {}}},
+                size=100
+            )
             
-        #     # Check if there are hits (documents)
-        #     if response['hits']['total']['value'] > 0:
-        #         print(f"Found {response['hits']['total']['value']} documents in Elasticsearch")
-        #         for doc in response['hits']['hits']:
-        #             tag_name = doc['_source'].get('tag_name', 'No tag name')
-        #             category = doc['_source'].get('category', 'No category')
-        #             print(f"Tag: {tag_name}, Category: {category}")
-        #     else:
-        #         print("No documents found in Elasticsearch, but connection is working")
+            # Check if there are hits (documents)
+            if response['hits']['total']['value'] > 0:
+                print(f"Found {response['hits']['total']['value']} documents in Elasticsearch")
+                
+                for doc in response['hits']['hits']:
+                    tag_name = doc['_source'].get('club_names')
+                    
+                    #category = doc['_source'].get('category', 'No category')
+                    print(f"Tag: {tag_name}")
+            else:
+                print("No documents found in Elasticsearch, but connection is working")
             
-        #     # Return success even if no documents, as long as the query worked
-        #     return True
+            # Return success even if no documents, as long as the query worked
+            return True
             
-        # except Exception as search_error:
-        #     print(f"Search test failed: {search_error}")
-        #     # Still return True because initialization succeeded
-        #     # The search might fail for reasons other than initialization problems
-        #     return True
+        except Exception as search_error:
+            print(f"Search test failed: {search_error}")
+            # Still return True because initialization succeeded
+            # The search might fail for reasons other than initialization problems
+            return True
         ###########################################################################
         
         return True

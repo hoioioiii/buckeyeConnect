@@ -17,8 +17,8 @@ from flask import Flask
 app = Flask(__name__)
 
 # Register api blueprint
-app.register_blueprint(feed_bp, url_prefix='/api')
-app.register_blueprint(local_data_bp, url_prefix='/api')
+app.register_blueprint(feed_bp, url_prefix='/api/feed')
+app.register_blueprint(local_data_bp, url_prefix='/api/local_data')
 
 
 # # MySQL configurations

@@ -37,7 +37,7 @@ export interface FeedFilters {
 }
 
 // Using relative URLs that will be handled by Next.js proxy
-const API_BASE_URL = "/api";
+const API_BASE_URL = "/api/feed";
 
 export const fetchActivities = async (
   filters: FeedFilters = {}
