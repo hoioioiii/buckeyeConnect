@@ -111,3 +111,13 @@ export const logoutUser = (req, res) => {
         message: 'User logged out successfully'
     })
 }
+
+// Get all users endpoint
+export const getUsers = async (req, res) => {
+    try {
+        const users = await User.find({}, '_id name email');
+        res.json(users)
+    } catch (error) {
+        console.log('Error on getUsers:', error)
+    }
+}

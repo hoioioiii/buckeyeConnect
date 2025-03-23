@@ -39,7 +39,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
                 {/* Friend tab - to be implemented */}
                 <Link
-                  href="/friend" // TODO: ADD PATH /pages/friend 
+                  href="/pages/find-friends" // TODO: ADD PATH /pages/friend 
                   className={`px-4 py-2 rounded-lg ${pathname === '/friend' ? 'bg-red-50 text-red-600' : 'text-gray-600'
                     }`}
                 >
