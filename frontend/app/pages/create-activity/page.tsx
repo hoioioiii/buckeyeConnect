@@ -25,6 +25,9 @@ import { ELASTICSEARCH_CONSTANTS } from "@/lib/constants";
 import { Activity_Temp } from "@/lib/types";
 import { addActivity } from "@/app/services/create/create_api";
 import { redirect } from "next/navigation";
+import { ProtectedRoute } from "@/app/context/protectedRoute";
+
+
 const CreateActivityPage = () => {
   const [activityFrequency, setActivityFrequency] = useState("one-time");
 
@@ -203,299 +206,290 @@ const CreateActivityPage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex flex-col max-w-2xl w-full p-6">
-        <h1 className="text-2xl font-semibold mb-6">Create Activity</h1>
-
-        {/* Create Activity Form */}
-        <form onSubmit={handleSubmit}>
-
-          {/* Activity Title */}
-          <div className="flex flex-col mb-6">
-            <label htmlFor="title" className="mb-2">
-              Title
-            </label>
-            <Input
-              type="text"
-              id="title"
-              name="title"
-              placeholder="E.g. Icecream Social"
-              onChange={(e) => setSelectedTitle(e.target.value)}
-            />
-          </div>
-
-          {/* Activity Type Dropdown */}
-          <div className="flex flex-col mb-6">
-            <label htmlFor="activityType" className="mb-2">
-              Activity Type
-            </label>
-            <Select
-              value={selectedActivity}
-              onValueChange={setSelectedActivity}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select an activity type" />
-              </SelectTrigger>
-              <SelectContent>
-                {activityType?.map((activity) => (
-                  <SelectItem key={activity} value={activity}>
-                    {activity}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Associated Club Dropdown */}
-          <div className="flex flex-col mb-6">
-            <label htmlFor="assosicatedClub" className="mb-2">
-              Associated Club (Optional)
-            </label>
-            <Select value={selectedClub} onValueChange={setSelectedClub}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a club" />
-              </SelectTrigger>
-              <SelectContent>
-                {clubList?.map((club) => (
-                  <SelectItem key={club} value={club}>
-                    {club}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Location Input Box */}
-          <div className="flex flex-col mb-6">
-            <label htmlFor="location" className="mb-2">
-              Location
-            </label>
-            <div className="relative">
-              {" "}
-              {/* Relative to place inside Input Box */}
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MapPin size={16} className="text-muted-foreground" />
-              </span>
+    <ProtectedRoute>
+      <div className="max-w-3xl mx-auto">
+        <div className="flex flex-col max-w-2xl w-full p-6">
+          <h1 className="text-2xl font-semibold mb-6">Create Activity</h1>
+          {/* Create Activity Form */}
+          <form onSubmit={handleSubmit}>
+            {/* Activity Title */}
+            <div className="flex flex-col mb-6">
+              <label htmlFor="title" className="mb-2">
+                Title
+              </label>
               <Input
                 type="text"
-                id="location"
-                name="location"
-                placeholder="Where is this happening?"
-                className="pl-10"
-                onChange={(e) => setSelectedLocation(e.target.value)}
+                id="title"
+                name="title"
+                placeholder="E.g. Icecream Social"
+                onChange={(e) => setSelectedTitle(e.target.value)}
               />
             </div>
-          </div>
-
-          {/* One time or recurring activity */}
-          <div className="mb-6">
-            <label htmlFor="activityFrequency">
-              Is this a recurring activity?
-            </label>
-            <div className="flex mt-2">
-              <RadioGroup
-                className="flex items-center"
-                value={activityFrequency}
-                onValueChange={setActivityFrequency}
+            {/* Activity Type Dropdown */}
+            <div className="flex flex-col mb-6">
+              <label htmlFor="activityType" className="mb-2">
+                Activity Type
+              </label>
+              <Select
+                value={selectedActivity}
+                onValueChange={setSelectedActivity}
               >
-                <RadioGroupItem value="one-time" id="one-time" />
-                <label htmlFor="one-time">One-time</label>
-                <RadioGroupItem
-                  value="recurring"
-                  id="recurring"
-                  className="ml-4"
-                />
-                <label htmlFor="recurring">Recurring</label>
-              </RadioGroup>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select an activity type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {activityType?.map((activity) => (
+                    <SelectItem key={activity} value={activity}>
+                      {activity}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </div>
-
-          {/* Render this if one-time activity */}
-          {activityFrequency === "one-time" && (
-            <div className="flex items-center mb-6">
-              <div className="w-full relative">
-                <label htmlFor="dateTime">Date & Time</label>
+            {/* Associated Club Dropdown */}
+            <div className="flex flex-col mb-6">
+              <label htmlFor="assosicatedClub" className="mb-2">
+                Associated Club (Optional)
+              </label>
+              <Select value={selectedClub} onValueChange={setSelectedClub}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a club" />
+                </SelectTrigger>
+                <SelectContent>
+                  {clubList?.map((club) => (
+                    <SelectItem key={club} value={club}>
+                      {club}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Location Input Box */}
+            <div className="flex flex-col mb-6">
+              <label htmlFor="location" className="mb-2">
+                Location
+              </label>
+              <div className="relative">
+                {" "}
+                {/* Relative to place inside Input Box */}
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MapPin size={16} className="text-muted-foreground" />
+                </span>
                 <Input
-                  type="datetime-local"
-                  id="dateTime"
-                  name="dateTime"
-                  className="mt-1"
-                  onChange={(e) => setSelectedStartDate(e.target.value)}
+                  type="text"
+                  id="location"
+                  name="location"
+                  placeholder="Where is this happening?"
+                  className="pl-10"
+                  onChange={(e) => setSelectedLocation(e.target.value)}
                 />
               </div>
-              <div className="ml-6 w-full">
-                <label htmlFor="duration" className="">
-                  Duration
-                </label>
-                <Select
-                  value={Number(selectedDuration)}
-                  onValueChange={(value) => setSelectedDuration(value)}
+            </div>
+            {/* One time or recurring activity */}
+            <div className="mb-6">
+              <label htmlFor="activityFrequency">
+                Is this a recurring activity?
+              </label>
+              <div className="flex mt-2">
+                <RadioGroup
+                  className="flex items-center"
+                  value={activityFrequency}
+                  onValueChange={setActivityFrequency}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select duration" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {durationList.map((minutes) => (
-                      <SelectItem key={minutes} value={minutes}>
-                        {formatDuration(Number(minutes))}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <RadioGroupItem value="one-time" id="one-time" />
+                  <label htmlFor="one-time">One-time</label>
+                  <RadioGroupItem
+                    value="recurring"
+                    id="recurring"
+                    className="ml-4"
+                  />
+                  <label htmlFor="recurring">Recurring</label>
+                </RadioGroup>
               </div>
             </div>
-          )}
-
-          {/* Render this if recurring activity */}
-          {activityFrequency === "recurring" && (
-            <div className="flex flex-col mb-6 bg-gray-100 rounded-lg p-4">
-              <div>
-                <label htmlFor="recurrence">Recurrence Pattern</label>
-                <Select
-                  value={recurrencePattern}
-                  onValueChange={setRecurrencePattern}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select recurrence pattern" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {recurrenceList.map((pattern) => (
-                      <SelectItem key={pattern} value={pattern}>
-                        {pattern}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {/* If weekly render days of week so user can select */}
-                {recurrencePattern === "weekly" && (
-                  <div className="flex justify-between mt-4">
-                    {daysEnabledList.map((day) => (
-                      <button
-                        key={day}
-                        type="button"
-                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          selectedDays.includes(day)
-                            ? "bg-blue-500 text-white"
-                            : "border border-gray-300"
-                        }`}
-                        onClick={() => toggleDaySelection(day)}
-                      >
-                        {day.charAt(0)}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {/* Start date and start time for user event */}
-                <div className="flex mt-4 items-center mb-4">
-                  <div className="w-full relative">
-                    <label htmlFor="dateTime">Start Date & Time</label>
-                    <Input
-                      type="datetime-local"
-                      id="dateTime"
-                      name="dateTime"
-                      className="mt-1"
-                      onChange={(e) => setSelectedStartDate(e.target.value)}
-                    />
-                  </div>
-                  <div className="ml-6 w-full">
-                    <label htmlFor="duration" className="">
-                      Duration
-                    </label>
-                    <Select
-                      value={Number(selectedDuration)}
-                      onValueChange={setSelectedDuration}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select duration" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {durationList.map((minutes) => (
-                          <SelectItem key={minutes} value={minutes.toString()}>
-                            {formatDuration(Number(minutes))}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+            {/* Render this if one-time activity */}
+            {activityFrequency === "one-time" && (
+              <div className="flex items-center mb-6">
+                <div className="w-full relative">
+                  <label htmlFor="dateTime">Date & Time</label>
+                  <Input
+                    type="datetime-local"
+                    id="dateTime"
+                    name="dateTime"
+                    className="mt-1"
+                    onChange={(e) => setSelectedStartDate(e.target.value)}
+                  />
                 </div>
-                {/* Event end date selection */}
-                <div className="">
-                  <label htmlFor="endTime" className="block">
-                    Ends
+                <div className="ml-6 w-full">
+                  <label htmlFor="duration" className="">
+                    Duration
                   </label>
-                  <Select value={endTime} onValueChange={setEndTime}>
+                  <Select
+                    value={Number(selectedDuration)}
+                    onValueChange={(value) => setSelectedDuration(value)}
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select end date" />
+                      <SelectValue placeholder="Select duration" />
                     </SelectTrigger>
                     <SelectContent>
-                      {endingPattern.map((pattern) => (
+                      {durationList.map((minutes) => (
+                        <SelectItem key={minutes} value={minutes}>
+                          {formatDuration(Number(minutes))}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+            {/* Render this if recurring activity */}
+            {activityFrequency === "recurring" && (
+              <div className="flex flex-col mb-6 bg-gray-100 rounded-lg p-4">
+                <div>
+                  <label htmlFor="recurrence">Recurrence Pattern</label>
+                  <Select
+                    value={recurrencePattern}
+                    onValueChange={setRecurrencePattern}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select recurrence pattern" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {recurrenceList.map((pattern) => (
                         <SelectItem key={pattern} value={pattern}>
                           {pattern}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  {endTime === "on" && (
-                    <div>
-                      <label htmlFor="endDateTime" className="mt-4 block">
-                        Select End Date
-                      </label>
-                      <Input
-                        type="date"
-                        id="endDateTime"
-                        name="endDateTime"
-                        className="mt-1 w-auto"
-                        onChange={(e) => setSelectedEndDate(e.target.value)}
-                      />
+                  {/* If weekly render days of week so user can select */}
+                  {recurrencePattern === "weekly" && (
+                    <div className="flex justify-between mt-4">
+                      {daysEnabledList.map((day) => (
+                        <button
+                          key={day}
+                          type="button"
+                          className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            selectedDays.includes(day)
+                              ? "bg-blue-500 text-white"
+                              : "border border-gray-300"
+                          }`}
+                          onClick={() => toggleDaySelection(day)}
+                        >
+                          {day.charAt(0)}
+                        </button>
+                      ))}
                     </div>
                   )}
+                  {/* Start date and start time for user event */}
+                  <div className="flex mt-4 items-center mb-4">
+                    <div className="w-full relative">
+                      <label htmlFor="dateTime">Start Date & Time</label>
+                      <Input
+                        type="datetime-local"
+                        id="dateTime"
+                        name="dateTime"
+                        className="mt-1"
+                        onChange={(e) => setSelectedStartDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="ml-6 w-full">
+                      <label htmlFor="duration" className="">
+                        Duration
+                      </label>
+                      <Select
+                        value={Number(selectedDuration)}
+                        onValueChange={setSelectedDuration}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select duration" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {durationList.map((minutes) => (
+                            <SelectItem key={minutes} value={minutes.toString()}>
+                              {formatDuration(Number(minutes))}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  {/* Event end date selection */}
+                  <div className="">
+                    <label htmlFor="endTime" className="block">
+                      Ends
+                    </label>
+                    <Select value={endTime} onValueChange={setEndTime}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select end date" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {endingPattern.map((pattern) => (
+                          <SelectItem key={pattern} value={pattern}>
+                            {pattern}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {endTime === "on" && (
+                      <div>
+                        <label htmlFor="endDateTime" className="mt-4 block">
+                          Select End Date
+                        </label>
+                        <Input
+                          type="date"
+                          id="endDateTime"
+                          name="endDateTime"
+                          className="mt-1 w-auto"
+                          onChange={(e) => setSelectedEndDate(e.target.value)}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
+            )}
+            {/* Max participants input */}
+            <div className="flex flex-col mb-6">
+              <label htmlFor="maxParticipants" className="mb-2">
+                Maximum Participants
+              </label>
+              <div className="relative">
+                {" "}
+                {/* Relative to place inside Input Box */}
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Users size={16} className="text-muted-foreground" />
+                </span>
+                <Input
+                  type="number"
+                  placeholder="How many people can join?"
+                  className="pl-10"
+                  onChange={(e) =>
+                    setSelectedMaxParticipants(Number(e.target.value))
+                  }
+                />
+              </div>
             </div>
-          )}
-
-          {/* Max participants input */}
-          <div className="flex flex-col mb-6">
-            <label htmlFor="maxParticipants" className="mb-2">
-              Maximum Participants
-            </label>
-            <div className="relative">
-              {" "}
-              {/* Relative to place inside Input Box */}
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Users size={16} className="text-muted-foreground" />
-              </span>
-              <Input
-                type="number"
-                placeholder="How many people can join?"
-                className="pl-10"
-                onChange={(e) =>
-                  setSelectedMaxParticipants(Number(e.target.value))
-                }
+            {/* Description input */}
+            <div className="flex flex-col">
+              <label htmlFor="description" className="mb-2">
+                Description
+              </label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Tell people more about your activity..."
+                className="h-32 p-2"
+                onChange={(e) => setSelectedDescription(e.target.value)}
               />
             </div>
-          </div>
-
-          {/* Description input */}
-          <div className="flex flex-col">
-            <label htmlFor="description" className="mb-2">
-              Description
-            </label>
-            <Textarea
-              id="description"
-              name="description"
-              placeholder="Tell people more about your activity..."
-              className="h-32 p-2"
-              onChange={(e) => setSelectedDescription(e.target.value)}
-            />
-          </div>
-
-          <Button type="submit" className="mt-6">
-            Create
-          </Button>
-        </form>
+            <Button type="submit" className="mt-6">
+              Create
+            </Button>
+          </form>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 };
 export default CreateActivityPage;

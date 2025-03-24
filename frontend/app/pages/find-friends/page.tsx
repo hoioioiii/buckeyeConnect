@@ -6,6 +6,7 @@ import { UserContext } from '@/app/context/userContext';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProtectedRoute } from "@/app/context/protectedRoute";
 
 interface User {
   _id: string;
@@ -63,40 +64,42 @@ const FindFriendsPage: React.FC = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center text-pink-600 mb-4">
-        Feautured Users
-      </h1>
-      <p className="text-xl font-bold text-center mb-4">Find friends with similar schedules, interests and more!</p>
-      <Input
-        type="text"
-        placeholder="Search for people"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="mb-6"
-      />
-      <div className="space-y-4">
-        {filteredUsers.map((user) => (
-          <Card key={user._id} className="flex items-center p-4">
-            <CardContent className="flex-1">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">
-                  {user.name}
-                </CardTitle>
-                <p className="text-sm text-gray-500">{user.email}</p>
-              </CardHeader>
-            </CardContent>
-            <Button
-              variant="default"
-              onClick={() => sendFriendInvite(user._id)}
-              className="ml-4 bg-pink-700"
-            >
-              Add Friend 
-            </Button>
-          </Card>
-        ))}
-      </div>
-    </div>
+    <ProtectedRoute>
+        <div className="max-w-2xl mx-auto p-4">
+          <h1 className="text-2xl font-bold text-center text-pink-600 mb-4">
+            Feautured Users
+          </h1>
+          <p className="text-xl font-bold text-center mb-4">Find friends with similar schedules, interests and more!</p>
+          <Input
+            type="text"
+            placeholder="Search for people"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="mb-6"
+          />
+          <div className="space-y-4">
+            {filteredUsers.map((user) => (
+              <Card key={user._id} className="flex items-center p-4">
+                <CardContent className="flex-1">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">
+                      {user.name}
+                    </CardTitle>
+                    <p className="text-sm text-gray-500">{user.email}</p>
+                  </CardHeader>
+                </CardContent>
+                <Button
+                  variant="default"
+                  onClick={() => sendFriendInvite(user._id)}
+                  className="ml-4 bg-pink-700"
+                >
+                  Add Friend
+                </Button>
+              </Card>
+            ))}
+          </div>
+        </div>
+    </ProtectedRoute>
   );
 };
 
