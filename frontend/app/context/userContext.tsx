@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 interface User {
+  id: string;
   name: string;
   email: string;
 }
@@ -23,11 +24,13 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!user) {
-      axios.get('/profile')
+      axios.get('/profile', { withCredentials: true })
         .then(({ data }) => {
+          console.log("context.tsx: Fetched user from /profile:", data);
           setUser(data);
         });
     }
+    console.log("context.tsx: User context value at render:", user);
   }, [user]);
 
   const logout = async () => {
