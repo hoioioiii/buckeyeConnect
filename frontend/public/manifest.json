@@ -1,0 +1,30 @@
+{
+    "name": "BuckeyeConnect",
+    "short_name": "BuckeyeConnect",
+    "icons": [
+        {
+            "src": "/temp_logo.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "theme_color": "#FFFFFF",
+    "background_color": "#FFFFFF",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "screenshots": [
+        {
+            "src": "/osu_wide.webp",
+            "sizes": "2881x1621",
+            "type": "image/webp",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/osu_wide.webp",
+            "sizes": "2881x1621",
+            "type": "image/webp"
+        }
+    ]
+}

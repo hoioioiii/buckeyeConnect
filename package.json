@@ -1,0 +1,29 @@
+{
+  "name": "buckeyeconnect",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start:frontend": "cd frontend && npm run dev",
+    "start:db": "cd server && npm start",
+    "start:backend": "./start-backend.sh",
+    "dep-installer": "npm-run-all install:frontend install:server",
+    "install:frontend": "cd frontend && npm install",
+    "install:server": "cd server && npm install",
+    "start": "npm-run-all --parallel start:frontend start:db start:backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoioioiii/buckeyeConnect.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hoioioiii/buckeyeConnect/issues"
+  },
+  "homepage": "https://github.com/hoioioiii/buckeyeConnect#readme",
+  "description": "",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
