@@ -118,10 +118,10 @@ const CreateActivityPage = () => {
         if (response?.success) {
           pass = true;
           console.log("Setting recurrancePattern with:", response);
-          setRecurrenceList(response?.data?.recurrences_pattern[0]);
-          setDurationList(response?.data?.duration_minutes[0]);
-          setEndingPattern(response?.data?.ending_pattern[0]);
-          setdaysEnabledList(response?.data?.days_enabled[0]);
+          setRecurrenceList(response?.data?.recurrences_pattern);
+          setDurationList(response?.data?.duration_minutes);
+          setEndingPattern(response?.data?.ending_pattern);
+          setdaysEnabledList(response?.data?.days_enabled);
         } else {
           pass = false;
           console.error(
@@ -325,7 +325,7 @@ const CreateActivityPage = () => {
                     Duration
                   </label>
                   <Select
-                    value={Number(selectedDuration)}
+                    value={selectedDuration.toString()}
                     onValueChange={(value) => setSelectedDuration(value)}
                   >
                     <SelectTrigger>
@@ -398,7 +398,7 @@ const CreateActivityPage = () => {
                         Duration
                       </label>
                       <Select
-                        value={Number(selectedDuration)}
+                        value={selectedDuration.toString()}
                         onValueChange={setSelectedDuration}
                       >
                         <SelectTrigger>

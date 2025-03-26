@@ -6,6 +6,7 @@ import { UserContextProvider } from './context/userContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
+  manifest: "/manifest.json",
   title: 'BuckeyeConnect',
   description: 'Connect with OSU students through activities and events!',
 };

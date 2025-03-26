@@ -5,6 +5,7 @@ const API_BASE_URL = "/api/create";
 export interface Response {
   success: boolean;
   error?: string;
+  data?: any; // Add the data property to the Response interface
 }
 
 export async function addActivity(type: Activity_Temp): Promise<Response> {
@@ -24,8 +25,7 @@ export async function addActivity(type: Activity_Temp): Promise<Response> {
     }
 
     const data: Response = await response.json();
-    console.log("Success:", data);
-    return { success: true, data: data };
+    return { success: true, data };
   } catch (error) {
     console.error("Error:", error);
     return { success: false, error: "Failed to add activity" };
