@@ -17,6 +17,15 @@ def get_tags():
     try:
         # Get the Elasticsearch client
         es = get_elasticsearch()
+        activity_data = request.json
+
+        if 'coordinates' in activity_data and activity_data['coordinates']:
+            # Ensure the coordinates are in the correct format for Elasticsearch
+            coordinates = {
+                "lat": activity_data['coordinates']['lat'],
+                "lon": activity_data['coordinates']['lon']
+            }
+            activity_data['coordinates'] = coordinates
         
         # Check if 'tags' index exists
         if not es.indices.exists(index="tags"):
@@ -84,7 +93,9 @@ def get_activities():
         time_filter = request.args.get('time', '')
         major_filter = request.args.get('major', '')
         tags = request.args.getlist('tags')
-        
+        user_lat = request.args.get('latitude')
+        user_lon = request.args.get('longitude')
+
         # # Print received parameters for debugging
         # print(f"Received filters - search: '{search_query}', tags: {tags}, distance: {distance}, time: {time_filter}, major: {major_filter}")
         
@@ -146,7 +157,37 @@ def get_activities():
                 })
             except:
                 pass  # Skip if parsing fails
-        
+
+
+       # Add geo-distance filter if user location is provided
+        if user_lat and user_lon and distance and distance != 'Any Distance':
+            try:
+                # Extract numeric distance value (e.g., "Within 5 miles" → 5)
+                max_distance = None
+                if "Within 0.5 miles" in distance:
+                    max_distance = 0.5
+                elif "Within 1 mile" in distance:
+                    max_distance = 1
+                elif "Within 2 mile" in distance:
+                    max_distance = 2
+                elif "Within 5 mile" in distance:
+                    max_distance = 5
+                elif "Within 10 mile" in distance:
+                    max_distance = 10
+                
+                if max_distance:
+                    query["bool"]["filter"] = {
+                        "geo_distance": {
+                            "distance": f"{max_distance}mi",
+                            "coordinates": {
+                                "lat": float(user_lat),
+                                "lon": float(user_lon)
+                            }
+                        }
+                    }
+            except Exception as e:
+                print(f"Error applying geo filter: {e}")
+
         # Add time filter if provided
         if time_filter and time_filter != 'Any Time':
             now = datetime.now()
@@ -226,6 +267,7 @@ def get_activities():
                 "title": activity.get('title', ''),
                 "type": activity.get('activity_type', ''),
                 "location": activity.get('location', ''),
+                "coordinates": activity.get('coordinates'),
                 "distance": f"{activity.get('distance_value', 0.5)} miles",
                 "creator": activity.get('created_by', 'Anonymous'),
                 "major": activity.get('major', 'Undecided'),

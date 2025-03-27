@@ -7,6 +7,10 @@ export type Activity = {
   year: string;
   time: string;
   location: string;
+  coordinates?: { 
+    lat: number;
+    lon: number;
+  };
   distance: string;
   spots: number;
   participants: number;
@@ -21,6 +25,10 @@ export type Activity_Temp = {
   activity_type: string;
   club: string;
   location: string;
+  coordinates?: { 
+    lat: number;
+    lon: number;
+  };
   max_spots: number;
   filled_spots: number;
   description: string;

@@ -13,6 +13,9 @@ activity_mapping = {
             "location": {
                 "type": "text"
             },
+            "coordinates": {
+                "type": "geo_point" 
+            },
             "max_spots": {
                 "type": "integer"
             },

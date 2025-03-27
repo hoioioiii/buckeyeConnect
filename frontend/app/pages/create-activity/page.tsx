@@ -25,6 +25,9 @@ import { ELASTICSEARCH_CONSTANTS } from "@/lib/constants";
 import { Activity_Temp } from "@/lib/types";
 import { addActivity } from "@/app/services/create/create_api";
 import { redirect } from "next/navigation";
+import { geocodeLocation } from "@/app/utils/geocoding";
+import LocationAutocomplete from '@/components/ui/LocationAutocomplete';
+
 const CreateActivityPage = () => {
   const [activityFrequency, setActivityFrequency] = useState("one-time");
 
@@ -50,7 +53,9 @@ const CreateActivityPage = () => {
   const [selectedDuration, setSelectedDuration] = useState("");
   const [selectedDaysEnabled, setSelectedDaysEnabled] = useState<string[]>([]);
   const [selectedEndingPattern, setSelectedEndingPattern] = useState("");
-
+  const [locationCoordinates, setLocationCoordinates] = useState<{lat: number, lon: number} | null>(null);
+  const [geocodingStatus, setGeocodingStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  
   // Logic to format duration in hours and minutes
   const formatDuration = (minutes: number) => {
     console.log("Minutes:", minutes);
@@ -150,6 +155,28 @@ const CreateActivityPage = () => {
     endingPattern,
   ]);
 
+
+  const handleLocationChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const locationName = e.target.value;
+    setSelectedLocation(locationName);
+    
+    if (locationName.length > 3) {
+      setGeocodingStatus("loading");
+      try {
+        const coordinates = await geocodeLocation(locationName);
+        setLocationCoordinates(coordinates);
+        setGeocodingStatus(coordinates ? "success" : "error");
+      } catch (error) {
+        console.error("Error geocoding location:", error);
+        setLocationCoordinates(null);
+        setGeocodingStatus("error");
+      }
+    } else {
+      setLocationCoordinates(null);
+      setGeocodingStatus("idle");
+    }
+  };
+
   // Array of days of the week for weekly recurrence selection. Need short and full to differentiate between Ts and Ss, else, when you click one T both Ts will be selected
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -172,6 +199,7 @@ const CreateActivityPage = () => {
       activity_type: selectedActivity,
       club: selectedClub,
       location: selectedLocation,
+      coordinates: locationCoordinates ?? undefined,
       max_spots: selectedMaxParticipants,
       filled_spots: 0,
       description: selectedDescription,
@@ -270,21 +298,29 @@ const CreateActivityPage = () => {
             <label htmlFor="location" className="mb-2">
               Location
             </label>
-            <div className="relative">
-              {" "}
-              {/* Relative to place inside Input Box */}
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <MapPin size={16} className="text-muted-foreground" />
-              </span>
-              <Input
-                type="text"
-                id="location"
-                name="location"
-                placeholder="Where is this happening?"
-                className="pl-10"
-                onChange={(e) => setSelectedLocation(e.target.value)}
-              />
-            </div>
+            <LocationAutocomplete 
+              onLocationSelect={(locationName, coordinates) => {
+                setSelectedLocation(locationName);
+                setLocationCoordinates(coordinates);
+                setGeocodingStatus(coordinates ? "success" : "error");
+              }}
+              placeholder="Search for a location (e.g., Knowlton Hall, 1660 Neil Ave)"
+            />
+            
+            {/* Geocoding status indicator */}
+            {geocodingStatus === "loading" && (
+              <p className="text-gray-500 text-sm mt-1">Finding location...</p>
+            )}
+            {geocodingStatus === "success" && locationCoordinates && (
+              <p className="text-green-500 text-sm mt-1">
+                Location found
+              </p>
+            )}
+            {geocodingStatus === "error" && (
+              <p className="text-red-500 text-sm mt-1">
+                Location not found or outside Columbus, OH. Please enter a valid location within Columbus.
+              </p>
+            )}
           </div>
 
           {/* One time or recurring activity */}

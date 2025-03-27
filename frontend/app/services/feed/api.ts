@@ -3,6 +3,10 @@ export interface Activity {
   title: string;
   type: string;
   location: string;
+  coordinates?: { 
+    lat: number;
+    lon: number;
+  };
   distance: string;
   creator: string;
   major: string;
@@ -34,6 +38,8 @@ export interface FeedFilters {
   time?: string;
   major?: string;
   tags?: string[];
+  latitude?: number;  // Add these fields
+  longitude?: number;
 }
 
 // Using relative URLs that will be handled by Next.js proxy
@@ -58,6 +64,9 @@ export const fetchActivities = async (
     if (filters.tags && filters.tags.length > 0) {
       filters.tags.forEach((tag) => params.append("tags", tag));
     }
+
+    if (filters.latitude) params.append("latitude", filters.latitude.toString());
+    if (filters.longitude) params.append("longitude", filters.longitude.toString());
 
     console.log(
       `Fetching activities from: ${API_BASE_URL}/activities?${params.toString()}`

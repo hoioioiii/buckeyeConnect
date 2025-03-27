@@ -13,9 +13,12 @@ import {
 } from "@/components/ui/select";
 import { MapPin } from "lucide-react";
 import { getUserProfile, updateUserProfile, UserProfile } from '@/app/services/profile/basic-info/api';
+import { useLocation } from '@/app/hooks/useLocation';
 
 export default function BasicInfoPage() {
   const userContext = useContext(UserContext);
+  const { coords, permissionState, loading: locationLoading, getLocation } = useLocation();
+
 
   if (!userContext) {
     throw new Error('useContext must be used within a UserContextProvider');
@@ -46,6 +49,30 @@ export default function BasicInfoPage() {
 
     fetchProfile();
   }, [user?.id]);
+
+
+  useEffect(() => {
+    if (profile.enable_location && !coords && !locationLoading) {
+      getLocation().catch(err => {
+        console.log("Could not get location:", err);
+      });
+    }
+  }, [profile.enable_location, coords, locationLoading]);
+
+  // Handle location toggle
+  const handleLocationToggle = async () => {
+    const newValue = !profile.enable_location;
+    setProfile({ ...profile, enable_location: newValue });
+    
+    // Request location permission if enabling
+    if (newValue && !coords) {
+      try {
+        await getLocation();
+      } catch (err) {
+        console.error("Error getting location:", err);
+      }
+    }
+  };
 
   // Handle update
   const handleSave = async () => {
@@ -153,23 +180,46 @@ export default function BasicInfoPage() {
             />
           </div>
 
+
           <div className="mt-8">
             <h2 className="text-lg font-medium mb-4">Location Settings</h2>
             <div className="bg-blue-50 p-4 rounded-lg">
               <p className="text-gray-700 mb-4">
                 Your location is used to show relevant activities near you.
               </p>
+              
+              {/* Show location status if available */}
+              {coords && profile.enable_location && (
+                <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-4">
+                  <p className="text-sm text-green-700">
+                    Location services are active
+                  </p>
+                </div>
+              )}
+              
               <button
                 className="flex items-center text-blue-500 hover:text-blue-600"
-                onClick={() =>
-                  setProfile({ ...profile, enable_location: !profile.enable_location })
-                }
+                onClick={handleLocationToggle}
+                disabled={locationLoading}
               >
                 <MapPin className="w-4 h-4 mr-2" />
-                {profile.enable_location ? "Disable" : "Enable"} Location Services
+                {locationLoading
+                  ? "Getting location..."
+                  : profile.enable_location
+                    ? "Disable Location Services"
+                    : "Enable Location Services"
+                }
               </button>
+              
+              {profile.enable_location && (
+                <p className="mt-2 text-xs text-gray-500">
+                  Your location is only used to show nearby activities and is never stored permanently.
+                </p>
+              )}
             </div>
           </div>
+
+          
 
           <div className="flex justify-between mt-8">
             <button

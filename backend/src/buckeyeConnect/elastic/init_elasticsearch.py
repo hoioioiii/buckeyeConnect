@@ -12,6 +12,10 @@ sample_activities = [
         "title": "Neuroscience Research MRI Study",
         "activity_type": "Research",
         "location": "OSU Medical Center",
+        "coordinates": {
+            "lat": 39.9959,
+            "lon": -83.0171
+        },
         "max_spots": 5,
         "filled_spots": 2,
         "description": "Participate in a 1-hour MRI study. Compensation provided.",
@@ -33,6 +37,10 @@ sample_activities = [
         "title": "AI Club Weekly Meeting",
         "activity_type": "Club Meeting",
         "location": "Knowlton Hall 250",
+        "coordinates": {
+            "lat": 40.0023,
+            "lon": -83.0155
+        },
         "max_spots": 50,
         "filled_spots": 20,
         "description": "Join us for a discussion on deep learning and AI trends.",
@@ -56,6 +64,10 @@ sample_activities = [
         "title": "CSE 2421 Study Session",
         "activity_type": "Study Group",
         "location": "Thompson Library 2nd Floor",
+        "coordinates": {
+            "lat": 39.9996,
+            "lon": -83.0132
+        },
         "max_spots": 10,
         "filled_spots": 5,
         "description": "Join our study session to review concepts and solve problems together.",
@@ -77,6 +89,10 @@ sample_activities = [
         "title": "Google Swag Giveaway",
         "activity_type": "Free Swag",
         "location": "Ohio Union",
+        "coordinates": {
+            "lat": 39.9976,
+            "lon": -83.0084
+        },
         "max_spots": 100,
         "filled_spots": 40,
         "description": "Stop by to grab free Google swag and learn about career opportunities!",
@@ -98,6 +114,10 @@ sample_activities = [
         "title": "Women in STEM Networking Night",
         "activity_type": "Networking",
         "location": "Scott Lab 100",
+        "coordinates": {
+            "lat": 40.0026,
+            "lon": -83.0150
+        },
         "max_spots": 30,
         "filled_spots": 15,
         "description": "Network with successful women in STEM fields and gain career advice.",

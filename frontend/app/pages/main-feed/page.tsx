@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Search, MessageCircle, Plus, Star, Users, Clock, Zap, MapPin } from 'lucide-react';
-import { MOCK_ACTIVITIES } from '@/lib/mock-data';
-import { fetchActivities, fetchTags, Activity, FeedFilters } from '@/app/services/feed/api'
-
+import { fetchActivities, fetchTags, Activity, FeedFilters } from '@/app/services/feed/api';
+import { useLocation } from '@/app/hooks/useLocation';
+import { calculateDistance } from '@/app/utils/geocoding';
 
 const MainFeed = () => {
     const [activeTab, setActiveTab] = useState('activities');
@@ -21,6 +21,16 @@ const MainFeed = () => {
     const [timeFilter, setTimeFilter] = useState('Any Time');
     const [majorFilter, setMajorFilter] = useState('All Majors');
 
+    // Location state
+    const { coords, error: locationError, loading: locationLoading, getLocation } = useLocation();
+    const [calculatedDistances, setCalculatedDistances] = useState<Record<string, string>>({});
+
+    // Request location on initial load
+    useEffect(() => {
+      getLocation().catch(err => {
+        console.log("Auto-location detection failed", err);
+      });
+    }, []);
 
     // Added useEffect to load data on component mount
     useEffect(() => {
@@ -50,6 +60,29 @@ const MainFeed = () => {
       loadInitialData();
     }, []);
 
+    // Calculate distances when activities or user location changes
+    useEffect(() => {
+      if (!coords || activities.length === 0) return;
+      
+      const newDistances: Record<string, string> = {};
+      
+      activities.forEach(activity => {
+        if (activity.coordinates && activity.coordinates.lat && activity.coordinates.lon) {
+          const distance = calculateDistance(
+            coords.latitude,
+            coords.longitude,
+            activity.coordinates.lat,
+            activity.coordinates.lon
+          );
+          newDistances[activity.id] = `${distance.toFixed(1)} miles`;
+        } else {
+          // Fallback to original distance if coordinates not available
+          newDistances[activity.id] = activity.distance;
+        }
+      });
+      
+      setCalculatedDistances(newDistances);
+    }, [activities, coords]);
 
     //  apply filters when they change
     useEffect(() => {
@@ -69,6 +102,12 @@ const MainFeed = () => {
                   major: majorFilter,
                   tags: selectedTags 
               };
+              
+              // Add user location if available
+              if (coords && distanceFilter !== 'Any Distance') {
+                filters.latitude = coords.latitude;
+                filters.longitude = coords.longitude;
+              }
               
               const response = await fetchActivities(filters);
               if (response.success) {
@@ -90,7 +129,16 @@ const MainFeed = () => {
       }, 500);
 
       return () => clearTimeout(timeoutId);
-    }, [searchQuery, distanceFilter, timeFilter, majorFilter, selectedTags]);
+    }, [searchQuery, distanceFilter, timeFilter, majorFilter, selectedTags, coords]);
+    
+    // Handle enabling location
+    const handleEnableLocation = async () => {
+      try {
+        await getLocation();
+      } catch (err) {
+        console.error("Error getting location:", err);
+      }
+    };
     
     // Simplified tag toggle function
     const toggleTag = (tag: string) => {      
@@ -109,8 +157,29 @@ const MainFeed = () => {
         <div className="max-w-4xl mx-auto p-4 bg-gray-50 min-h-screen">
           {/* Header Navigation */}
           <div className="bg-white p-4 rounded-lg shadow mb-6">
+            
+            {/* Location warning banner */}
+            {distanceFilter !== 'Any Distance' && !coords && (
+              <div className="bg-yellow-50 p-3 rounded-lg mb-4">
+                <div className="flex items-center gap-2">
+                  <MapPin className="text-yellow-600" size={18} />
+                  <div>
+                    <p className="text-sm text-yellow-700">
+                      Distance filter is active but location is not available.
+                    </p>
+                    <button 
+                      onClick={handleEnableLocation}
+                      className="text-xs text-blue-600 mt-1 hover:underline"
+                      disabled={locationLoading}
+                    >
+                      {locationLoading ? 'Getting location...' : 'Enable location services'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
     
-            {/* TODO: AI Suggestions */}
+            {/* AI Suggestions */}
             <div className="bg-blue-50 p-4 rounded-lg mb-4">
               <div className="flex items-center gap-2 text-blue-700 mb-2">
                 <Zap size={20} />
@@ -156,11 +225,19 @@ const MainFeed = () => {
                 <select 
                   className="border rounded p-2"
                   value={distanceFilter}
-                  onChange={(e) => setDistanceFilter(e.target.value)}
+                  onChange={(e) => {
+                    setDistanceFilter(e.target.value);
+                    if (e.target.value !== 'Any Distance' && !coords) {
+                      handleEnableLocation();
+                    }
+                  }}
                 >
                   <option>Any Distance</option>
                   <option>Within 0.5 miles</option>
                   <option>Within 1 mile</option>
+                  <option>Within 2 mile</option>
+                  <option>Within 5 mile</option>
+                  <option>Within 10 mile</option>
                 </select>
                 <select 
                   className="border rounded p-2"
@@ -230,7 +307,7 @@ const MainFeed = () => {
                         <h3 className="font-semibold text-lg">{activity.title}</h3>
                         <div className="flex items-center gap-2 text-gray-600 text-sm mt-1">
                           <MapPin size={16} />
-                          {activity.location} ({activity.distance})
+                          {activity.location} ({calculatedDistances[activity.id] || activity.distance})
                         </div>
                       </div>
                     </div>
@@ -290,5 +367,4 @@ const MainFeed = () => {
       );
     };
     
-    
-    export default MainFeed;
+export default MainFeed;
