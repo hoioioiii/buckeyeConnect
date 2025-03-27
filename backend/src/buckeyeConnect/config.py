@@ -9,6 +9,8 @@ import os
 # }
 # Import api blueprint
 from .api.feed.feed import feed_bp
+from .api.profile.basic_info.user import user_bp
+from .api.profile.preferences.user_preferences import preferences_bp
 from .api.local_data_apis.local_data import local_data_bp
 from .api.create.create import create_bp
 from flask import Flask
@@ -17,6 +19,8 @@ from flask import Flask
 app = Flask(__name__)
 
 # Register api blueprint
+app.register_blueprint(preferences_bp, url_prefix='/api/preferences')
+app.register_blueprint(user_bp, url_prefix='/api/user')
 app.register_blueprint(feed_bp, url_prefix='/api/feed')
 app.register_blueprint(local_data_bp, url_prefix='/api/local_data')
 app.register_blueprint(create_bp, url_prefix='/api/create')
