@@ -2,7 +2,7 @@ import os
 import sys
 from pathlib import Path
 from elasticsearch import Elasticsearch
-
+from backend.src.buckeyeConnect.LLM.init.embedded import tag_embedding 
 script_dir = Path(__file__).resolve().parent
 src_dir = script_dir / 'src'
 sys.path.insert(0, str(src_dir))
@@ -21,6 +21,14 @@ try:
             print("Warning: Elasticsearch initialization failed. API may not work correctly.")
             print("Continuing with mock data...")
         
+
+
+        print("Setting up embedded tag data...")
+        success = tag_embedding().embed_tag_data()
+        if not success:
+            print("Warning: Tag embedding failed. API may not work correctly.")
+            print("Continuing with mock data...")
+
         print("Starting BuckeyeConnect API...")
         
         # Enable more verbose CORS debugging
